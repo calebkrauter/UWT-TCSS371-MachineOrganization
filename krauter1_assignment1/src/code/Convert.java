@@ -38,60 +38,30 @@ public final class Convert {
      * @return the decimal equivalent of the 2's complement parameter
      */
     public static int convert2sCompToDecimal(final char[] theBits) {
-
         if (theBits.length > 16) {
             throw new IllegalArgumentException("Length of the array of bits is larger than 16. Length: " + theBits.length);
         }
         int bitAmount = theBits.length;
         int decValue = 2;
         int newDecValue = 0;
+        char[] theFinalBits = theBits;
         boolean isNegative = false;
         if (theBits[0] == '1') {
             isNegative = true;
         }
-        for (int bitIndex = bitAmount - 1; bitIndex >= 0; bitIndex--) {
-            // if char is 0 don't add converted value. If 1, do summation and power
-            if (theBits[bitIndex] == '1') {
-                newDecValue += (int) Math.pow(decValue, bitAmount - bitIndex - 1);
-            }
+        if (isNegative) {
+            int iterator = theBits.length - 1;
+            int iterateNext = iterator;
 
-            // Convert to 2's comp and get negative decimal
-            // Convert to negative by multiplying decimal by two and subtracting from initial decimal
-
-            // Checks if the first bit is '1' and if it is then it takes 2's complement.
-
-            if (theBits[0] == '1') {
-
-                // checks from right to left for a bit equalling '1'
-                // TODO - either figure out how to stop doing this check when '1' is found or use the second method
-                //        being flip all bits and add '1'.
-                int flipperIndex = bitIndex;
-
-                // Finds the first '1' closest to the right
-                if (theBits[bitIndex] == '1') {
-                    while (flipperIndex != 0) {
-
-                        // Checks for the next bit after the first '1' found.
-                        if (theBits[flipperIndex - 1] == '1') {
-                            flipperIndex--;
-                            // Flips every 1 bit immediately after the first 1 to 0
-                            theBits[flipperIndex] = '0';
-
-                            // If the bit is '0'
-                        } else {
-                            flipperIndex--;
-                            theBits[flipperIndex] = '1';
-                        }
-                    }
-                }
-
-                if (theBits[bitIndex] == '1') {
-                    newDecValue = 0;
-                    newDecValue += (int) Math.pow(decValue, bitAmount - bitIndex - 1);
-                }
-            }
+            theFinalBits = bitFlipper(theBits, iterator, iterateNext);
         }
 
+        for (int bitIndex = bitAmount - 1; bitIndex >= 0; bitIndex--) {
+            // if char is 0 don't add converted value. If 1, do summation and power
+            if (theFinalBits[bitIndex] == '1') {
+                newDecValue += (int) Math.pow(decValue, bitAmount - bitIndex - 1);
+            }
+        }
         if (isNegative) {
             return - newDecValue;
         }
@@ -119,46 +89,42 @@ public final class Convert {
      * @return a 16 bit two's complement equivalent of the decimal parameter
      */
     public static char[] convertDecimalTo2sComp(final int theDecimal) {
-
-
-        // TODO ensure that overflow is impossible.
-        // Idea- convert binary back to dec and if the dec does not equal the converted binary then it can't be represented in 16 bits.
-
-        char[] arrayOfBits = new char[16];
-        int bitAmount = arrayOfBits.length;
+        char[] theBits = new char[16];
+        int bitAmount = theBits.length;
         int dividend = 0;
+        int magnitudeOfTheDecimal = Math.abs(theDecimal);
+        char[] flippedBits;
 
-
-        // TODO - store the dividend at each step and reuse the next dividend
         for (int bitIndex = bitAmount - 1; bitIndex >= 0; bitIndex--) {
             int value;
 
             if (bitIndex == bitAmount - 1) {
-                value = theDecimal;
+                value = magnitudeOfTheDecimal;
             } else {
                 value = dividend;
             }
 
-            if (value % 2 == 0){
+            if (value % 2 == 0) {
                 dividend = value / 2;
-                arrayOfBits[bitIndex] = '0';
+                theBits[bitIndex] = '0';
 
-            } else if (value % 2 == 1){
-                // Subtract 1 from theDecimal to ensure that the value that is used is rounded to the floor which integer division should already do in java.
+            } else if (value % 2 == 1) {
+                // Subtract 1 from the decimal to ensure that the value that is used is rounded to the floor which integer division should already do in java.
                 dividend = (value - 1) / 2;
-                arrayOfBits[bitIndex] = '1';
+                theBits[bitIndex] = '1';
             }
+        }
+        if (theDecimal < 0) {
+            int iterator = theBits.length - 1;
+            int iterateNext = iterator;
 
+            flippedBits = bitFlipper(theBits, iterator, iterateNext);
+            theBits = flippedBits;
         }
 
-        // TODO - check if this is where exception should be thrown.
-        if (theDecimal != convert2sCompToDecimal(arrayOfBits)) {
-            throw new IllegalArgumentException("Decimal converted to 2's complement is "
-                    + theDecimal + ". Using 16 bit binary, the decimal converted back to decimal is recorded as "
-                    + convert2sCompToDecimal(arrayOfBits) + ".\nThe initial decimal does not fit in 16 bits.");
-        }
+        return theBits;
 
-        return arrayOfBits;
+        // TODO - throw exception for decimal that is unrepresentable in 16 bits
         // TODO - deal with bit extention for 1s or 0s as necessary.
 //        for (int bitIndex = 0; bitIndex < 16; bitIndex++) {
 //            if (arrayOfBits[bitIndex].equals(null)) {
@@ -179,5 +145,29 @@ public final class Convert {
     /*
      * NOTE: If you wish, you may also include private helper methods in this class.
      */
+    private static char[] bitFlipper(char[] theBits, int iterator, int iterateNext) {
+        // Base case
+        if (iterateNext != 0) {
+            iterateNext--;
+            // find the first 1 from the right
+            if (theBits[iterator] == '1') {
+                // Check for '1' and flip bit
+                if (theBits[iterateNext] == '1') {
+                    theBits[iterateNext] = '0';
 
+                    // Repeat a check for the next bit and flip it.
+                    return bitFlipper(theBits, iterator, iterateNext);
+                } else {
+                    // Flip bit
+                    theBits[iterateNext] = '1';
+                    return bitFlipper(theBits, iterator, iterateNext);
+                }
+            } else {
+                // Found a zero, iterate and look for the next 1
+                iterator--; // i = 2
+                return bitFlipper(theBits, iterator, iterateNext);
+            }
+        }
+        return theBits;
+    }
 }

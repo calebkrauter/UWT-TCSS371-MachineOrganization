@@ -33,19 +33,21 @@ public class Main {
 
         System.out.print("Convert 0 to binary | ");
         System.out.println(Arrays.toString(convertDecimalTo2sComp(0)));
-        System.out.print("Convert 1 to binary | ");
-        System.out.println(Arrays.toString(convertDecimalTo2sComp(1)));
+        System.out.print("Convert -1 to binary | ");
+        System.out.println(Arrays.toString(convertDecimalTo2sComp(-1)));
         System.out.print("Convert -100 to binary | ");
         System.out.println(Arrays.toString(convertDecimalTo2sComp(-100)));
         System.out.print("Convert -50 to binary | ");
         System.out.println(Arrays.toString(convertDecimalTo2sComp(-50)));
 
-        for (int i = 5; i < 7; i++) {
+        for (int i = 5; i < 6; i++) {
             int initialDecimal = (int) Math.pow(i, i);
             System.out.print("Convert this number " + initialDecimal + " to binary | ");
             System.out.println(Arrays.toString(convertDecimalTo2sComp(initialDecimal)));
         }
 
+        System.out.print("Convert -32768 to binary | ");
+        System.out.println(Arrays.toString(convertDecimalTo2sComp(-32768)));
         // Uncomment this block of code to test exception thrown in convertDecimalTo2sComp.
 //        int initialDecimal = (int) Math.pow(8, 8);
 //        System.out.println("Convert this number " + initialDecimal + " to binary");
@@ -117,15 +119,11 @@ public class Main {
 
     // Consider using recursion. That  might fit best.
     public static char[] convertDecimalTo2sComp(int theDecimal) {
-
-
-        // TODO - ensure that overflow is impossible.
-
         char[] theBits = new char[16];
         int bitAmount = theBits.length;
         int dividend = 0;
         int magnitudeOfTheDecimal = Math.abs(theDecimal);
-        char[] flippedBits = new char[16];
+        char[] flippedBits;
 
         for (int bitIndex = bitAmount - 1; bitIndex >= 0; bitIndex--) {
             int value;
@@ -153,13 +151,8 @@ public class Main {
             flippedBits = bitFlipper(theBits, iterator, iterateNext);
             theBits = flippedBits;
         }
-//
-//        // Converts binary back to decimal and if the decimal does not equal the converted binary then it can't be represented in 16 bits.
-//        if (magnitudeOfTheDecimal != convert2sCompToDecimal(theBits)) {
-//            throw new IllegalArgumentException("Decimal converted to 2's complement is "
-//                    + theDecimal + ". Using 16 bit binary, the decimal converted back to decimal is recorded as "
-//                    + convert2sCompToDecimal(theBits) + ".\nThe initial decimal does not fit in 16 bits.");
-//        }
+        System.out.println("The decimal" + theDecimal);
+
         return theBits;
         // TODO - deal with bit extention for 1s or 0s as necessary.
 //        for (int bitIndex = 0; bitIndex < 16; bitIndex++) {
@@ -167,6 +160,5 @@ public class Main {
 //                theBits[bitIndex] = 0;
 //            }
 //        }
-
     }
 }
