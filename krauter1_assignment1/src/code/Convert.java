@@ -38,10 +38,13 @@ public final class Convert {
      * @return the decimal equivalent of the 2's complement parameter
      */
     public static int convert2sCompToDecimal(final char[] theBits) {
+
+        if (theBits.length > 16) {
+            throw new IllegalArgumentException("Length of the array of bits is larger than 16. Length: " + theBits.length);
+        }
         int bitAmount = theBits.length;
         int decValue = 2;
         int newDecValue = 0;
-        System.out.println(Arrays.toString(theBits));
         boolean isNegative = false;
         if (theBits[0] == '1') {
             isNegative = true;
@@ -93,7 +96,6 @@ public final class Convert {
             return - newDecValue;
         }
         return newDecValue;
-
         /*
          * Write code here to implement this function.
          * Add comments, to explain any complex parts of your algorithm.
@@ -117,6 +119,8 @@ public final class Convert {
      * @return a 16 bit two's complement equivalent of the decimal parameter
      */
     public static char[] convertDecimalTo2sComp(final int theDecimal) {
+
+
         // TODO ensure that overflow is impossible.
         // Idea- convert binary back to dec and if the dec does not equal the converted binary then it can't be represented in 16 bits.
 
@@ -154,9 +158,15 @@ public final class Convert {
                     + convert2sCompToDecimal(arrayOfBits) + ".\nThe initial decimal does not fit in 16 bits.");
         }
 
-
-
         return arrayOfBits;
+        // TODO - deal with bit extention for 1s or 0s as necessary.
+//        for (int bitIndex = 0; bitIndex < 16; bitIndex++) {
+//            if (arrayOfBits[bitIndex].equals(null)) {
+//                arrayOfBits[bitIndex] = 0;
+//            }
+//        }
+
+
         /*
          * Write code here to implement this function.
          * Add comments, to explain any complex parts of your algorithm.
