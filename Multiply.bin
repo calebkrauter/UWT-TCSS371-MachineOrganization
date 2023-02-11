@@ -1,3 +1,5 @@
+; Caleb Krauter
+
 ; This is a program to multiply two numbers.
 ; The program first stores a number into address x3100.
 ; The program then stores a second number into x3101.
@@ -25,5 +27,7 @@
 ; The multiply program starts here.
 ; Add code below to complete the assignment requirements.
 ; Do NOT change any of the code above except to add a header comment with your name(s)
+
+0010 011 011110111 ; Loads R3 with the value stored in x3100 (x3100 - 3009 converted to binary and sign extended)
 
 1111 0000 0010 0101    ; halt the program (TRAP with vector x25)
