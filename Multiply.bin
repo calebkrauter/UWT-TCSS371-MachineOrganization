@@ -29,5 +29,6 @@
 ; Do NOT change any of the code above except to add a header comment with your name(s)
 
 0010 011 011110111 ; Loads R3 with the value stored in x3100 (x3100 - 3009 converted to binary and sign extended)
+0010 100 011110111 ; Loads R4 with the value stored in x3101 (x3101 - 300A converted to binary and sign extended)
 
 1111 0000 0010 0101    ; halt the program (TRAP with vector x25)
