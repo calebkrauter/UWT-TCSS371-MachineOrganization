@@ -1,0 +1,25 @@
+; A fourth binary machine code example
+
+; Use a loop
+; Add 1 + 2 + 3 + 4 + 5 in a loop = 15
+
+; coded as a 'while' loop with the test at the top of the loop
+
+; Set the start address for the program to x3000
+0011 000 000000000   ; The simulator does not display this instruction
+
+; clear R0 and R1
+0101 000 000 1 00000 ; SUM
+0101 001 001 1 00000 ; COUNT
+
+; put #5 into R1
+0001 001 001 1 00101 ; ADD - R1 <- R1 + 5
+
+0000 110 0 0000 0011  ; BRANCH while the loop count is positive
+0001 000 000 0 00 001 ; ADD the count to the sum
+0001 001 001 1 11111  ; decrement the count
+0000 111 1 1111 1100  ; BRANCH unconditionally jump to the top of the loop
+
+
+; End of the program
+1111 0000 0010 0101 ; TRAP (HALT uses TRAP vector x25)

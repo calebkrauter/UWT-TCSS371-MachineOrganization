@@ -1,0 +1,41 @@
+; A second binary machine code example
+; STORE from registers into memory
+; LOAD from memory into registers
+
+; Set the start address for the program to x3000
+0011 000 000000000   ; The simulator does not display this instruction
+
+; clear R0, R1, R2, R3
+0101 000 000 1 00000 ; AND - R0 <- R0 AND 0
+0101 001 001 1 00000 ; AND - R1 <- R1 AND 0
+0101 010 010 1 00000 ; AND - R2 <- R2 AND 0
+0101 011 011 1 00000 ; AND - R3 <- R3 AND 0
+
+; put #5 into R0
+0001 000 000 1 00101 ; ADD - R0 <- R0 + 5
+
+; add #3 to R0 and put the result into R1
+0001 001 000 1 00011 ; ADD - R1 <- R0 +  3
+
+; currently the PC is at x3006
+; at the start of this instruction the PC increments to x3007
+; STORE R0 into x3010 NOTE: offset = 16 - 7 = 9
+0011 000 0 0000 1001
+
+; currently the PC is at x3007
+; at the start of this instruction the PC increments to x3008
+; STORE R1 into x3011 NOTE: offset = 17 - 8 = 9
+0011 001 0 0000 1001
+
+; currently the PC is at x3008
+; at the start of this instruction the PC increments to x3009
+; LOAD from x3010 into R2; offset 16 - 9 = 7
+0010 010 0 0000 0111
+
+; currently the PC is at x3009
+; at the start of this instruction the PC increments to x300A
+; LOAD from x3011 into R3; offset 17 - 10 = 7
+0010 011 0 0000 0111
+
+; End of the program
+1111 0000 0010 0101 ; TRAP (HALT uses TRAP vector x25)

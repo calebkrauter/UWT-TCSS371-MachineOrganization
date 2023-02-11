@@ -1,0 +1,25 @@
+; A first binary machine code example
+
+; Set the start address for the program to x3000
+0011 000 000000000
+
+; clear R0 and R1
+0101 000 000 1 00000 ; AND) R0 <- R0 AND 0
+0101 001 001 1 00000 ; AND) R1 <- R1 AND 0
+
+; put #5 into R1
+0001 001 001 1 00101 ; ADD) R1 <- R1 + 5
+
+; add #3 to R1 and put the result into R0
+0001 000 001 1 00011 ; ADD) R0 <- R1  3
+
+; add R0 and R1 and put the result into R2
+0001 010 000 0 00 001 ; ADD) R2 <- R0 + R1
+
+; NOT R2
+1001 011 010 111111 ; NOT) R3 <- NOT R2
+
+; R0 = 8; R1 = 5; R2 = 13. R3 = -14
+
+; End of the program
+1111 0000 0010 0101 ; TRAP (HALT uses TRAP vector x25)
