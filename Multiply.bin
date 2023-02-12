@@ -38,4 +38,12 @@
 0001 001 001 1 11111 ; Decrement the count
 0000 001 1 1111 1101 ; BRANCH while the loop count is positive
 
+0011 101 0 1111 0011 ; x3102 <- R5
+
+0000 001 0 0000 0001 ; Case 1: R5 > 0 step over to the next line
+0001 110 110 1 00001 ; R6 <- 1
+0000 001 0 0000 0001 ; Case 2: R5 < 0 step over to the next line
+0001 110 110 1 11111 ; R6 <- -1
+0000 001 0 0000 0001 ; Case 3: R5 = 0 step over to the next line
+0001 110 110 1 00000 ; R6 <- 0
 1111 0000 0010 0101    ; halt the program (TRAP with vector x25)
