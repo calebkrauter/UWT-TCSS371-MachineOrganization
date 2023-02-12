@@ -12,7 +12,7 @@
 0101 000 000 1 00000   ; R0 <- 0
 0101 001 001 1 00000   ; R1 <- 0
 
-; store values into R0 and R1
+; store values into R0 and R1 
 0001 000 000 1 00101   ; R0 <- #5
 0001 001 001 1 00011   ; R1 <- #3
 
@@ -28,22 +28,43 @@
 ; Add code below to complete the assignment requirements.
 ; Do NOT change any of the code above except to add a header comment with your name(s)
 
-0010 011 011110111 ; Loads R3 with the value stored in x3100 (x3100 - 3009 converted to binary and sign extended)
-0010 100 011110111 ; Loads R4 with the value stored in x3101 (x3101 - 300A converted to binary and sign extended)
+; Load R3
+0010 011 0 1111 0111 ; Loads R3 with the value stored in x3100
 
-; Code below should perform multiplication: R5 <- R3 * R4
-; Use r0 as sum and r1 as count
-0001 001 100 1 00000 ; add R4 to the count
+; Check if R3 <- 0 then skip ahead
+0000 010 0 0000 1001 ; If the loaded value in R3 is 0, skip ahead to "Store result in R5"
+
+; Load R4
+0010 100 0 1111 0110 ; Loads R4 with the value stored in x3101
+
+; Check if R4 <- 0 then skip ahead
+0000 010 0 0000 1000 ; If the loaded value in R4 is 0, skip ahead to "Store result in R5"
+
+
+; Take Two's complement of R4 and R3 when either is less than 0
+0000 011 0 0000 0100 ; Check if R4 >= 0, if it is then skip ahead
+1001 100 100 111111 ; Flip bits in R4 by using the NOT operator
+0001 100 100 1 00001 ; R4 <- R4 + 1
+1001 011 011 111111 ; Flip bits in R3 by using the NOT operator
+0001 011 011 1 00001 ; R3 <- R3 + 1
+
+; Multiplication
 0001 101 101 000 011 ; R5 <- R5 + R3
-0001 001 001 1 11111 ; Decrement the count
+0001 100 100 1 11111 ; Decrement the count
 0000 001 1 1111 1101 ; BRANCH while the loop count is positive
 
-0011 101 0 1111 0011 ; x3102 <- R5
+; Store result contained in R5 in memory 
+0011 101 0 1110 1101 ; x3102 <- R5
 
-0000 001 0 0000 0001 ; Case 1: R5 > 0 step over to the next line
+; Load value into R5 for use in conditional logic
+0010 101 0 1110 1100 ; Load x3102 into R5
+
+; Code below acts as a comparator of sorts
+0000 110 0 0000 0001 ; Case 1: R5 > 0 step over to the next line
 0001 110 110 1 00001 ; R6 <- 1
-0000 001 0 0000 0001 ; Case 2: R5 < 0 step over to the next line
+0000 011 0 0000 0001 ; Case 2: R5 < 0 step over to the next line
 0001 110 110 1 11111 ; R6 <- -1
-0000 001 0 0000 0001 ; Case 3: R5 = 0 step over to the next line
+0000 101 0 0000 0001 ; Case 3: R5 = 0 step over to the next line
 0001 110 110 1 00000 ; R6 <- 0
+
 1111 0000 0010 0101    ; halt the program (TRAP with vector x25)
