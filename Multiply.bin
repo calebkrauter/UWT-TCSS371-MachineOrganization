@@ -31,4 +31,11 @@
 0010 011 011110111 ; Loads R3 with the value stored in x3100 (x3100 - 3009 converted to binary and sign extended)
 0010 100 011110111 ; Loads R4 with the value stored in x3101 (x3101 - 300A converted to binary and sign extended)
 
+; Code below should perform multiplication: R5 <- R3 * R4
+; Use r0 as sum and r1 as count
+0001 001 100 1 00000 ; add R4 to the count
+0001 101 101 000 011 ; R5 <- R5 + R3
+0001 001 001 1 11111 ; Decrement the count
+0000 001 1 1111 1101 ; BRANCH while the loop count is positive
+
 1111 0000 0010 0101    ; halt the program (TRAP with vector x25)
