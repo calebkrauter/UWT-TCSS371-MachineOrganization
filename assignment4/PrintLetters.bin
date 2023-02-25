@@ -1,8 +1,14 @@
+; Caleb Krauter
+; Program uses loops to print the alphaebet in decending and ascending order. Extra credit requires only one loop.
+
+; Idea, use branch statements to use only one loop.
+; For decending decrement until 0 (branch passed the increment and register <- negative value), in which case
+; branch to increment 
+
 0011 0000 0000 0000 ; start at x3000
 
 ; Clear some registers  R0, R1, R2, R3, R4, R5, R6, R7
 0101 000 000 1 00000 ; R0
-0101 001 001 1 00000 ; R1
 0101 001 001 1 00000 ; R1
 0101 010 010 1 00000 ; R2
 0101 011 011 1 00000 ; R3
@@ -11,11 +17,18 @@
 0101 110 110 1 00000 ; R6
 0101 111 111 1 00000 ; R7
 
-0010 001 000001000 ; Load into R1 #-64 from next step
+0010 001 000001110 ; Load into R1 #-64 from next step
 
-0010 000 000000110 ; Load into r0 the next address to be counted   
+0010 000 000001100 ; Load into r0 the next address to be counted   
 1111 0000 0010 0001    ; TRAP x21 : OUT
 0001 000 000 1 11111 ; decrement
+0001 101 111 1 00000 ; R5 <- 0
+0001 101 000 000 001 ; R5 <- R0 + R1
+0000 101 111111011 ; Branch when the addition of R0 and R1 is P or N not 0
+
+0010 001 000001000 ; Load into R1 #-90 from next step
+0001 000 000 1 00001 ; increment
+1111 0000 0010 0001    ; TRAP x21 : OUT
 0001 101 111 1 00000 ; R5 <- 0
 0001 101 000 000 001 ; R5 <- R0 + R1
 0000 101 111111011 ; Branch when the addition of R0 and R1 is P or N not 0
@@ -23,4 +36,5 @@
 1111 0000 0010 0101     ; Halt x25
 
 0000 0000 0101 1010 ; put into memory ascii value starting with z
-1111 1111 1100 0000; put into memory ascii value for -64
+1111 1111 1100 0000 ; put into memory ascii value for -64
+1111111110100110 ; put into memory -90
