@@ -1,9 +1,8 @@
 ; Caleb Krauter
-; Program uses loops to print the alphaebet in decending and ascending order. Extra credit requires only one loop.
+; Collaborated with Elroy Mbabazi
+; Program uses loops to print the alphaebet in decending and ascending order.
 
-; Idea, use branch statements to use only one loop.
-; For decending decrement until 0 (branch passed the increment and register <- negative value), in which case
-; branch to increment 
+; Program uses loops to print out in decending and ascending order the alphabet.
 
 0011 0000 0000 0000 ; start at x3000
 
@@ -21,13 +20,13 @@
 
 0010 000 000001100 ; Load into r0 the next address to be counted   
 1111 0000 0010 0001    ; TRAP x21 : OUT
-0001 000 000 1 11111 ; decrement
+0001 000 000 1 11111 ; Decrement
 0001 101 111 1 00000 ; R5 <- 0
 0001 101 000 000 001 ; R5 <- R0 + R1
 0000 101 111111011 ; Branch when the addition of R0 and R1 is P or N not 0
 
 0010 001 000001000 ; Load into R1 #-90 from next step
-0001 000 000 1 00001 ; increment
+0001 000 000 1 00001 ; Increment
 1111 0000 0010 0001    ; TRAP x21 : OUT
 0001 101 111 1 00000 ; R5 <- 0
 0001 101 000 000 001 ; R5 <- R0 + R1
@@ -35,6 +34,6 @@
 
 1111 0000 0010 0101     ; Halt x25
 
-0000 0000 0101 1010 ; put into memory ascii value starting with z
-1111 1111 1100 0000 ; put into memory ascii value for -64
-1111111110100110 ; put into memory -90
+0000 0000 0101 1010 ; Put into memory ascii value starting with z
+1111 1111 1100 0000 ; Put into memory ascii value for -64
+1111111110100110 ; Put into memory -90

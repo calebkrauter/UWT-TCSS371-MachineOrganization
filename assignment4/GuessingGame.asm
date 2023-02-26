@@ -1,6 +1,6 @@
 ; Caleb Krauter
-; Program description !
-          
+; Collaborated with Elroy Mbabazi
+
                 .ORIG               x3000               ; Start at orgin x3000
 Loop            LEA                 R0, Prompt          ; Ask for input    
                 PUTS                                    ; display the prompt
@@ -17,9 +17,9 @@ CheckValidity   LD                  R1, Valid1          ; Load a valid value int
                 LEA                 R0, Error
                 PUTS
             
+          
 END             HALT
 Prompt          .STRINGZ            "\nGuess a number 0 to 9: "
 Error           .STRINGZ            "\nInvalid input."            
 Valid1          .FILL               #-48              ; value for ASCII character 0.    
                 .END                
-            
