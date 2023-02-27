@@ -13,12 +13,13 @@ Loop            LD                  R0, #0
                 
 MinBoundCheck   LD                  R1, MinValid ; LD into R1 the minValid value
                 NOT                 R3, R0          ; Negate R0's value         
-                ADD                 R3, R3, #1      ; Add 1 to complete the 2's complement 
                 ADD                 R2, R3, R1      ; R1 - R0 (ex: min(x0030 = 0) - in(x002F = some value) = pos, if in is x0030 then it's zero, if it is greater than x0030 it is neg, (valid range for min is when input sum = nz))      
                 BRz                 END ;  Check if input meets requirements for min bound check.
                 BRp                 END
 
 MaxBoundCheck   LD                  R4, MaxValid ; LD into R4, maxV
+                ADD                 R3, R3, #1      ; Add 1 to complete the 2's complement 
+
                 ADD                 R5, R3, R4   ; R0's value is already negated, Add max with -INPUT 
                 BRn                 END          ; Check if input meets requirements for max bound check.
                 BRz                 END
@@ -26,14 +27,17 @@ MaxBoundCheck   LD                  R4, MaxValid ; LD into R4, maxV
                 ADD                 R1, R3, R6
                 BRn                 OutGreater
                 BRp                 OutLesser
+                BRz                 OutVictory
                 BR                  END
-OutGreater      LEA                 R0, Greater
+OutGreater      LEA                 R0, GreaterMsg
                 PUTS
                 BR                  Loop
-OutLesser       LEA                 R0, Lesser
+OutLesser       LEA                 R0, LesserMsg
                 PUTS
                 BR                  Loop
-                
+OutVictory      LEA                 R0, VictoryMsg
+                PUTS
+                BR                  END
 
 END             HALT
 MinValid          .FILL               x0030         
@@ -41,7 +45,7 @@ MaxValid          .FILL               x003A
 TargetValue     .FILL               x0037
 Prompt          .STRINGZ            "\nGuess a number 0 to 9: "
 Error           .STRINGZ            "\nInvalid input."            
-Greater         .STRINGZ            "\nToo big."
-Lesser          .STRINGZ            "\nToo small."
-Victory         .STRINGZ            "\nCorrect! You took n guesses."
+GreaterMsg         .STRINGZ            "\nToo big."
+LesserMsg          .STRINGZ            "\nToo small."
+VictoryMsg         .STRINGZ            "\nCorrect! You took n guesses."
                 .END                
