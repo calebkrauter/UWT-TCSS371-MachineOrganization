@@ -15,6 +15,8 @@
              
 Loop         ADD          R3,R3,R1      ; add R1 to the sum
              ADD          R2,R2,#-1     ; decrement the counter
+             LEA          R0, NumberA
+             PUTS
              BRp          Loop 
              
              HALT 
