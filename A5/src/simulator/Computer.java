@@ -162,10 +162,22 @@ public class Computer {
 	 * negative, zero, or positive.
 	 */
 	public void executeAdd() {
-		System.out.println("ADD"); // remove this print statement
-		
 		// implement the ADD instruction here
+		BitString destBS = mIR.substring(4, 3); // use to set cc
+		BitString sourceBS1 = mIR.substring(7, 3);
+		BitString sourceBS2 = mIR.substring(13, 3);
 
+		if (mIR.substring(10,1).equals("1".toCharArray())) {
+			sourceBS2 = mIR.substring(11, 5);
+		} else {
+			mRegisters[destBS.getUnsignedValue()].set2sCompValue(getSum(sourceBS1, sourceBS2));
+			setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
+		}
+
+	}
+
+	private int getSum(BitString sourceBS1, BitString sourceBS2) {
+		return sourceBS1.get2sCompValue() + sourceBS2.get2sCompValue();
 	}
 	
 	/**
@@ -198,8 +210,6 @@ public class Computer {
 	 * is negative, zero, or positive.
 	 */
 	public void executeAnd() {
-		System.out.println("AND");   // remove this print statement
-		
 		// implement the AND instruction here
 		
 	}
@@ -218,6 +228,16 @@ public class Computer {
 		// add code here to set the condition code
 
 		// This block of code sets the destination register.
+		setConditionCodes(destBS);
+
+	}
+
+	/**
+	 * Sets the condition codes N, Z or P when the function is called and
+	 * a destination register is passed as an argument.
+	 * @param destBS that sets the current condition codes.
+	 */
+	private void setConditionCodes(BitString destBS) {
 		if (destBS.get2sCompValue() < 0) {
 			mCC.setBits("100".toCharArray());
 		} else if (destBS.get2sCompValue() > 0) {
@@ -225,9 +245,8 @@ public class Computer {
 		} else {
 			mCC.setBits("010".toCharArray());
 		}
-
-
 	}
+
 
 	/**
 	 * Executes the trap operation by checking the vector (bits [7:0]

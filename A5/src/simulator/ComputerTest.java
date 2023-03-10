@@ -85,6 +85,37 @@ class ComputerTest {
 		
 		//myComputer.display();
 	}
+//	/**
+//	 * Test method for {@link simulator.Computer#executeNot()}.
+//	 */
+//	@Test
+//	void testExecuteNot6() {
+//
+//		//myComputer.display();
+//
+//		// NOTE: R6 contains #-5 initially when the Computer is instantiated
+//		// So, iF we execute R4 <- NOT R6, then R4 should contain 1111 1111 1111 1010    (-6)
+//		// AND CC should be 100
+//
+//		Need to load into r6 to test this. Can't do this till we make load.
+//
+//		String program[] = {
+//				"1001100110111111",    // R4 <- NOT R6
+//				"1111000000100101"     // TRAP - vector x25 - HALT
+//		};
+//
+//		myComputer.loadMachineCode(program);
+//		myComputer.execute();
+//
+//		assertEquals(4, myComputer.getRegisters()[4].get2sCompValue());
+//
+//		// Check that CC was set correctly
+//		BitString expectedCC = new BitString();
+//		expectedCC.setBits("001".toCharArray());
+//		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+//
+//		//myComputer.display();
+//	}
 	
 	/**
 	 * Test method for {@link simulator.Computer#executeAdd()}. <br>
