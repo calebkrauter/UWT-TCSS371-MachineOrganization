@@ -183,4 +183,25 @@ class ComputerTest {
 		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
 	}
 
+	/**
+	 * Test method for {@link simulator.Computer#executeAdd()}. <br>
+	 * Computes 2 + 3. R0 <- R2 + #3
+	 */
+	@Test
+	void testExecuteAddR2PlusImm15() {
+
+		String[] program =
+				{"0001000010101111",  // R0 <- R2 + #15
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(17, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
 }

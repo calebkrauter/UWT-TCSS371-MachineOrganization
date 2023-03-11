@@ -167,12 +167,12 @@ public class Computer {
 		BitString sourceBS1 = mIR.substring(7, 3);
 		BitString sourceBS2 = mIR.substring(13, 3);
 
-		if (mIR.substring(10,1).equals("1".toCharArray())) {
+		if (mIR.substring(10,1).getUnsignedValue() == 1) {
 			sourceBS2 = mIR.substring(11, 5);
-		} else {
-			mRegisters[destBS.getUnsignedValue()].set2sCompValue(getSum(sourceBS1, sourceBS2));
-			setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
 		}
+		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getSum(sourceBS1, sourceBS2));
+		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
+
 
 	}
 
