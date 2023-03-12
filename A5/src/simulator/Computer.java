@@ -185,13 +185,14 @@ public class Computer {
 	 * then sets CC.
 	 */
 	public void executeLoad() {
-		System.out.println("LD");  // remove this print statement
-		
-		// TODO - Implement the LD instruction here
-		// 		  LD will look at a specific memory location based on the offset and get the value
-		// 	 	  from the memory location and put it in the destination register. It can get the memory from mMemory[].
-		// 		  The program will be an isntruction with a 9 bit offset which should be some value in the range such that
-		// 		  the memory located and loaded is within the max memory size.
+		BitString destBS = mIR.substring(4, 3);
+		BitString offsetBS2 = mIR.substring(7, 9);
+		// Put into destReg the value put into memory at offset
+
+		int location = getPC().get2sCompValue() + offsetBS2.get2sCompValue();
+		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getMemory()[location].get2sCompValue());
+
+		setConditionCodes(destBS);
 	}
 
 

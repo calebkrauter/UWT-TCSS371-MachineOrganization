@@ -292,4 +292,28 @@ class ComputerTest {
 		expectedCC.setBits("001".toCharArray());
 		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
 	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 5 AND -5. R0 <- R5 AND -5
+	 */
+	@Test
+	void testExecuteLoadR0WithOffset2() {
+
+		String[] program =
+				{"0010000000000010", // LD into R0 offset 2
+						"0001001000100101",// R1 <- R0 + 5 (This instruction is just used for testing a larger offset.)
+						"1111000000100101", // HALT
+				"0000000000000101"}; // Ascii for 5
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(5, myComputer.getRegisters()[0].get2sCompValue());
+//
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
 }
