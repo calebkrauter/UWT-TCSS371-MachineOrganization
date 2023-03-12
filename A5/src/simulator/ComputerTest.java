@@ -61,7 +61,6 @@ class ComputerTest {
 	 */
 	@Test
 	void testExecuteNot5() {
-	
 		//myComputer.display();
 		
 		// NOTE: R5 contains #5 initially when the Computer is instantiated
@@ -123,7 +122,7 @@ class ComputerTest {
 	 */
 	@Test
 	void testExecuteAddR2PlusR2() {
-		
+
 		String[] program =
 			{"0001000010000010",  // R0 <- R2 + R2 (#4)
 		     "1111000000100101"}; // HALT
@@ -145,7 +144,7 @@ class ComputerTest {
 	 */
 	@Test
 	void testExecuteAddR2PlusImm3() {
-		
+
 		String[] program =
 			{"0001000010100011",  // R0 <- R2 + #3
 		     "1111000000100101"}; // HALT
@@ -167,7 +166,7 @@ class ComputerTest {
 	 */
 	@Test
 	void testExecuteAddR2PlusImmNeg3() {
-		
+
 		String[] program =
 			{"0001000010111101",  // R0 <- R2 + #-3
 		     "1111000000100101"}; // HALT
@@ -198,6 +197,29 @@ class ComputerTest {
 		myComputer.execute();
 
 		assertEquals(17, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 1 AND 3. R0 <- R1 AND R3
+	 */
+	@Test
+	void testExecuteANDR1andR2() {
+
+		String[] program =
+				{"0101000001000011",  // R0 <- R1 AND R3
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(1, myComputer.getRegisters()[0].get2sCompValue());
 
 		// Check that CC was set correctly
 		BitString expectedCC = new BitString();

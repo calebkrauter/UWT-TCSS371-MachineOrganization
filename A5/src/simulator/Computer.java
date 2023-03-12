@@ -142,7 +142,8 @@ public class Computer {
 	public void executeBranch() {
 		System.out.println("BR"); // remove this print statement
 		
-		// implement the BR instruction here
+		// TODO - implement the BR instruction here
+		// 		  Based on condition codes, if they are met then the new location from offset is used.
 		
 	}
 	
@@ -162,8 +163,7 @@ public class Computer {
 	 * negative, zero, or positive.
 	 */
 	public void executeAdd() {
-		// implement the ADD instruction here
-		BitString destBS = mIR.substring(4, 3); // use to set cc
+		BitString destBS = mIR.substring(4, 3);
 		BitString sourceBS1 = mIR.substring(7, 3);
 		BitString sourceBS2 = mIR.substring(13, 3);
 
@@ -172,8 +172,6 @@ public class Computer {
 		}
 		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getSum(sourceBS1, sourceBS2));
 		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
-
-
 	}
 
 	private int getSum(BitString sourceBS1, BitString sourceBS2) {
@@ -189,10 +187,14 @@ public class Computer {
 	public void executeLoad() {
 		System.out.println("LD");  // remove this print statement
 		
-		// implement the LD instruction here
-
+		// TODO - Implement the LD instruction here
+		// 		  LD will look at a specific memory location based on the offset and get the value
+		// 	 	  from the memory location and put it in the destination register. It can get the memory from mMemory[].
+		// 		  The program will be an isntruction with a 9 bit offset which should be some value in the range such that
+		// 		  the memory located and loaded is within the max memory size.
 	}
-	
+
+
 	/**
 	 * op   dr  sr1      sr2
 	 * 0101 000 000 0 00 000
@@ -210,12 +212,42 @@ public class Computer {
 	 * is negative, zero, or positive.
 	 */
 	public void executeAnd() {
-		// implement the AND instruction here
-		
+		// TODO - We need to check the bits of two registers or one register and immediate value. When
+		// 		  there are like bits found at the same index and it is a '1' then create a new string of bits
+		//		  appending the '1' where it occurs and '0's elsewhere.
+
+		BitString destBS = mIR.substring(4, 3);
+		BitString sourceBS1 = mIR.substring(7, 3);
+		BitString sourceBS2 = mIR.substring(13, 3);
+
+		if (mIR.substring(10,1).getUnsignedValue() == 1) {
+			sourceBS2 = mIR.substring(11, 5);
+		}
+		int length = getRegisters()[sourceBS1.getUnsignedValue()].getBits().length;
+		mRegisters[destBS.getUnsignedValue()].setBits(getLogicalConjunction(sourceBS1, sourceBS2, length));
+		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
+	}
+
+	public char[] getLogicalConjunction(BitString sourceBS1, BitString sourceBS2, int length) {
+		char[] logicalConjunctionArray = new char[length];
+		for (int i = length - 1; i >=0; i--) {
+			final char currentBitSR1 = getRegisters()[sourceBS1.getUnsignedValue()].getBits()[i];
+			final char currentBitSR2 = getRegisters()[sourceBS2.getUnsignedValue()].getBits()[i];
+			if (currentBitSR1 == currentBitSR2 && currentBitSR1 == '1') {
+				logicalConjunctionArray[i] = '1';
+			} else {
+				logicalConjunctionArray[i] = '0';
+
+			}
+		}
+		// If this doesn't work with little effort, re-engineer using loops.
+		// Look at each bit in sr1 and sr2. If they are equal and 1 then add to the array '1' else '0'
+
+		return logicalConjunctionArray;
 	}
 
 	/**
-	 * Performs not operation by using the data from the source register (bits[8:6]) 
+	 * Performs not operation by using the data from the source register (bits[8:6])
 	 * and inverting and storing in the destination register (bits[11:9]).
 	 * Then sets CC.
 	 */
@@ -260,7 +292,8 @@ public class Computer {
 		boolean halt = true;
 
 		// implement the TRAP instruction here
-
+		// TODO - take a look at notes. Use substring to check for the correct bits 0->7
+		//		  if
 		return halt;
 	}
 	

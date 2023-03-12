@@ -13,7 +13,6 @@ public class Simulator {
 	public static void main(String[] args) {
 
 		Computer myComputer;
-
 		/************************************** */
 		/** The next variable - "program" */
 		/** allows someone using the simulator (such as a grader) */
@@ -83,7 +82,7 @@ public class Simulator {
 		
 		
 		myComputer = new Computer();
-		
+
 		/* Show the initial configuration of the computer. */
 		//myComputer.display();
 		
