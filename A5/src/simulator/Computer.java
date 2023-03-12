@@ -192,7 +192,7 @@ public class Computer {
 		int location = getPC().get2sCompValue() + offsetBS2.get2sCompValue();
 		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getMemory()[location].get2sCompValue());
 
-		setConditionCodes(destBS);
+		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
 	}
 
 

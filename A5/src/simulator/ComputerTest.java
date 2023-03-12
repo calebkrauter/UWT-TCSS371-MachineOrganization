@@ -294,8 +294,8 @@ class ComputerTest {
 	}
 
 	/**
-	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
-	 * Computes 5 AND -5. R0 <- R5 AND -5
+	 * Test method for {@link simulator.Computer#executeLoad()}. <br>
+	 * Computes R0 <- offset 2. R0 <- 5.
 	 */
 	@Test
 	void testExecuteLoadR0WithOffset2() {
@@ -314,6 +314,52 @@ class ComputerTest {
 		// Check that CC was set correctly
 		BitString expectedCC = new BitString();
 		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeLoad()}. <br>
+	 * Computes R0 <- offset 1. R0 <- -15.
+	 */
+	@Test
+	void testExecuteLoadR0WithOffsetNeg15() {
+
+		String[] program =
+				{"0010000000000001", // LD into R0 offset 1
+						"1111000000100101", // HALT
+						"1111111111110001"}; // Ascii for -15
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(-15, myComputer.getRegisters()[0].get2sCompValue());
+//
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("100".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeLoad()}. <br>
+	 * Computes R0 <- offset 1. R0 <- 0.
+	 */
+	@Test
+	void testExecuteLoadR0WithOffset0() {
+
+		String[] program =
+				{"0010000000000001", // LD into R0 offset 1
+						"1111000000100101", // HALT
+						"0000000000000000"}; // Ascii for 0
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(0, myComputer.getRegisters()[0].get2sCompValue());
+//
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("010".toCharArray());
 		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
 	}
 }
