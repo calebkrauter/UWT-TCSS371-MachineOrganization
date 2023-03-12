@@ -210,10 +210,76 @@ class ComputerTest {
 	 * Computes 1 AND 3. R0 <- R1 AND R3
 	 */
 	@Test
-	void testExecuteANDR1andR2() {
+	void testExecuteANDR1andR3() {
 
 		String[] program =
 				{"0101000001000011",  // R0 <- R1 AND R3
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(1, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 1 AND 2. R0 <- R1 AND R2
+	 */
+	@Test
+	void testExecuteANDR1andR2() {
+
+		String[] program =
+				{"0101000001000010",  // R0 <- R1 AND R2
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(0, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("010".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 5 AND 15. R0 <- R5 AND 15
+	 */
+	@Test
+	void testExecuteANDR5andImm15() {
+
+		String[] program =
+				{"0101000101101111",  // R0 <- R5 AND 15
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(5, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 5 AND -5. R0 <- R5 AND -5
+	 */
+	@Test
+	void testExecuteANDR5andImmNeg5() {
+
+		String[] program =
+				{"0101000101111011",  // R0 <- R5 AND -5
 						"1111000000100101"}; // HALT
 
 		myComputer.loadMachineCode(program);

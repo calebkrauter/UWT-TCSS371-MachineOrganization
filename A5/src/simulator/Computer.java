@@ -212,27 +212,26 @@ public class Computer {
 	 * is negative, zero, or positive.
 	 */
 	public void executeAnd() {
-		// TODO - We need to check the bits of two registers or one register and immediate value. When
-		// 		  there are like bits found at the same index and it is a '1' then create a new string of bits
-		//		  appending the '1' where it occurs and '0's elsewhere.
-
 		BitString destBS = mIR.substring(4, 3);
 		BitString sourceBS1 = mIR.substring(7, 3);
 		BitString sourceBS2 = mIR.substring(13, 3);
-
+		sourceBS1.set2sCompValue(mIR.substring(7, 3).getUnsignedValue());
+		sourceBS2.set2sCompValue(mIR.substring(13, 3).getUnsignedValue());
+		
 		if (mIR.substring(10,1).getUnsignedValue() == 1) {
-			sourceBS2 = mIR.substring(11, 5);
+			sourceBS2.set2sCompValue(mIR.substring(11, 5).get2sCompValue());
 		}
-		int length = getRegisters()[sourceBS1.getUnsignedValue()].getBits().length;
+
+		int length = sourceBS2.getLength();
 		mRegisters[destBS.getUnsignedValue()].setBits(getLogicalConjunction(sourceBS1, sourceBS2, length));
 		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
 	}
 
 	public char[] getLogicalConjunction(BitString sourceBS1, BitString sourceBS2, int length) {
 		char[] logicalConjunctionArray = new char[length];
-		for (int i = length - 1; i >=0; i--) {
-			final char currentBitSR1 = getRegisters()[sourceBS1.getUnsignedValue()].getBits()[i];
-			final char currentBitSR2 = getRegisters()[sourceBS2.getUnsignedValue()].getBits()[i];
+		for (int i = 0; i < length; i++) {
+			final char currentBitSR1 = sourceBS1.getBits()[i];
+			final char currentBitSR2 = sourceBS2.getBits()[i];
 			if (currentBitSR1 == currentBitSR2 && currentBitSR1 == '1') {
 				logicalConjunctionArray[i] = '1';
 			} else {
