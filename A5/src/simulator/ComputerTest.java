@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @author Alan Fowler
+ * @author Caleb Krauter
  * @version 1.3
  */
 class ComputerTest {
@@ -21,39 +22,6 @@ class ComputerTest {
 	@BeforeEach
 	void setUp() {
 		myComputer = new Computer();
-	}
-	
-	
-	
-	
-	/*
-	 * NOTE:
-	 * Programs in unit tests should ideally have one instruction per line
-	 * with a comment for each line.
-	 */
-
-	/**
-	 * Test method for {@link simulator.Computer#executeBranch()}.
-	 */
-	@Test
-	void testExecuteBranch() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link simulator.Computer#executeLoad()}.
-	 */
-	@Test
-	void testExecuteLoad() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link simulator.Computer#executeAnd()}.
-	 */
-	@Test
-	void testExecuteAnd() {
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -84,38 +52,28 @@ class ComputerTest {
 		
 		//myComputer.display();
 	}
-//	/**
-//	 * Test method for {@link simulator.Computer#executeNot()}.
-//	 */
-//	@Test
-//	void testExecuteNot6() {
-//
-//		//myComputer.display();
-//
-//		// NOTE: R6 contains #-5 initially when the Computer is instantiated
-//		// So, iF we execute R4 <- NOT R6, then R4 should contain 1111 1111 1111 1010    (-6)
-//		// AND CC should be 100
-//
-//		Need to load into r6 to test this. Can't do this till we make load.
-//
-//		String program[] = {
-//				"1001100110111111",    // R4 <- NOT R6
-//				"1111000000100101"     // TRAP - vector x25 - HALT
-//		};
-//
-//		myComputer.loadMachineCode(program);
-//		myComputer.execute();
-//
-//		assertEquals(4, myComputer.getRegisters()[4].get2sCompValue());
-//
-//		// Check that CC was set correctly
-//		BitString expectedCC = new BitString();
-//		expectedCC.setBits("001".toCharArray());
-//		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
-//
-//		//myComputer.display();
-//	}
-	
+
+	/**
+	 * Test method for {@link simulator.Computer#executeNot()}.
+	 */
+	@Test
+	void testExecuteNotR6() {
+		String program[] = {
+				"1001100110111111",    // R4 <- NOT R6
+				"1111000000100101"     // TRAP - vector x25 - HALT
+		};
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(-7, myComputer.getRegisters()[4].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("100".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
 	/**
 	 * Test method for {@link simulator.Computer#executeAdd()}. <br>
 	 * Computes 2 + 2. R0 <- R2 + R2
@@ -126,12 +84,40 @@ class ComputerTest {
 		String[] program =
 			{"0001000010000010",  // R0 <- R2 + R2 (#4)
 		     "1111000000100101"}; // HALT
-		
+
 		myComputer.loadMachineCode(program);
 		myComputer.execute();
 
 		assertEquals(4, myComputer.getRegisters()[0].get2sCompValue());
 		
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAdd()}. <br>
+	 * Computes 15 + 7. R0 <- R2 + R3
+	 */
+	@Test
+	void testExecuteAddR2PlusR3() {
+
+		String[] program =
+				{"0010010000000011", // Load into R2 the ascii value below halt.
+						"0010011000000011", // Load into R3 the ascii value below halt.
+						"0001000010000011",  // R0 <- R2 + R3
+						"1111000000100101", // HALT
+						"0000000000001111", // ascii for 15.
+						"0000000000000111" // ascii for 7.
+
+				};
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		assertEquals(22, myComputer.getRegisters()[0].get2sCompValue());
+
 		// Check that CC was set correctly
 		BitString expectedCC = new BitString();
 		expectedCC.setBits("001".toCharArray());
@@ -494,8 +480,7 @@ class ComputerTest {
 		// Check that the BR condition is "010"
 		assertEquals(2, myComputer.getMemory()[1].substring(4, 3).get2sCompValue());
 		// If this test passes then the Branch instruction properly branched to the last line before HALT.
-		// If the result is -14 then it did branch because the condition codes were met.
-		assertEquals(-1, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
+		assertEquals(-15, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
 	}
 
 }

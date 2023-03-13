@@ -8,6 +8,7 @@ import java.util.Arrays;
  *  
  * @author mmuppa
  * @author acfowler
+ * @author Caleb Krauter
  * @version 1.3
  */
 public class Computer {
@@ -122,10 +123,6 @@ public class Computer {
 		}
 	}
 	
-	
-	
-	
-	
 	// The next 6 methods are used to execute the required instructions:
 	// BR, ADD, LD, AND, NOT, TRAP
 	
@@ -140,9 +137,8 @@ public class Computer {
 	 * adding the sign-extended PCoffset9 field to the incremented PC.
 	 */
 	public void executeBranch() {
-		if (mIR.substring(4, 3).get2sCompValue() == getCC().get2sCompValue())
-			mPC.setUnsignedValue(mPC.getUnsignedValue() + mIR.substring(7, 9).get2sCompValue());
-
+			if (mIR.substring(4, 3).get2sCompValue() == getCC().get2sCompValue())
+				mPC.setUnsignedValue(mPC.getUnsignedValue() + mIR.substring(7, 9).get2sCompValue());
 	}
 	
 	/**
@@ -166,14 +162,18 @@ public class Computer {
 		BitString sourceBS2 = mIR.substring(13, 3);
 
 		if (mIR.substring(10,1).getUnsignedValue() == 1) {
-			sourceBS2 = mIR.substring(11, 5);
+			mRegisters[sourceBS2.getUnsignedValue()] = mIR.substring(11, 5);
 		}
-		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getSum(sourceBS1, sourceBS2));
+		mRegisters[destBS.getUnsignedValue()]
+				.set2sCompValue(getSum(mRegisters[sourceBS1.getUnsignedValue()],
+						mRegisters[sourceBS2.getUnsignedValue()]));
+
 		setConditionCodes(mRegisters[destBS.getUnsignedValue()]);
 	}
 
 	private int getSum(BitString sourceBS1, BitString sourceBS2) {
 		return sourceBS1.get2sCompValue() + sourceBS2.get2sCompValue();
+
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class Computer {
 	public void executeLoad() {
 		BitString destBS = mIR.substring(4, 3);
 		BitString offsetBS2 = mIR.substring(7, 9);
-		// Put into destReg the value put into memory at offset
+
 
 		int location = getPC().get2sCompValue() + offsetBS2.get2sCompValue();
 		mRegisters[destBS.getUnsignedValue()].set2sCompValue(getMemory()[location].get2sCompValue());
@@ -238,9 +238,6 @@ public class Computer {
 
 			}
 		}
-		// If this doesn't work with little effort, re-engineer using loops.
-		// Look at each bit in sr1 and sr2. If they are equal and 1 then add to the array '1' else '0'
-
 		return logicalConjunctionArray;
 	}
 
@@ -288,11 +285,14 @@ public class Computer {
 	 */
 	public boolean executeTrap() {
 		boolean halt = true;
-
-		// implement the TRAP instruction here
-		// TODO - take a look at notes. Use substring to check for the correct bits 0->7
-		//		  if
-		return halt;
+		boolean out = false;
+		BitString outBS = new BitString();
+		outBS.setBits("00100001".toCharArray());
+		if (mIR.substring(8,8).get2sCompValue() == outBS.get2sCompValue()) {
+				System.out.println((char) getRegisters()[0].get2sCompValue());
+			return out;
+		}
+			return halt;
 	}
 	
 	

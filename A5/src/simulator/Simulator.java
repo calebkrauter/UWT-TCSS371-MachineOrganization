@@ -31,7 +31,7 @@ public class Simulator {
 		 * "0011000000000000", // Use address x3000 as the start location in memory for the program
 		 */
 
-		String program[] = {	
+		String program[] = {
 			"0010000000001000",  // LD into R0 x39 which is ASCII 9
 			"0010001000001000",  // LD into R1 x-30
 			"0001010000000001",  // ADD R2 <- R0 + R1 ; #9 ; R2 is the counter
@@ -84,7 +84,7 @@ public class Simulator {
 		myComputer = new Computer();
 
 		/* Show the initial configuration of the computer. */
-		//myComputer.display();
+//		myComputer.display();
 		
 		myComputer.loadMachineCode(program);
 
@@ -95,8 +95,8 @@ public class Simulator {
 		myComputer.execute();
 		
 		/* Show the final configuration of the computer. */
-		//System.out.println();
-		//myComputer.display();
+//		System.out.println();
+//		myComputer.display();
 	}
 
 }
