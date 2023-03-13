@@ -362,4 +362,140 @@ class ComputerTest {
 		expectedCC.setBits("010".toCharArray());
 		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
 	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes R0 <- offset 1. R0 <- (R2 + 14)). Result is R0 <- 16.
+	 * Uses unconditional branching.
+	 */
+	@Test
+	void testUnconditional111BR() {
+		String[] program =
+				{"0000111000000001", // Branch no matter the condition code.
+						"0001000010101111",  // R0 <- R2 + #15 (This line should never get executed)
+						"0001000010101110",  // R0 <- R2 + #14
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		// If the BR is unconditional, check
+		assertEquals(-1, myComputer.getMemory()[0].substring(4, 3).get2sCompValue());
+		assertEquals(16, myComputer.getRegisters()[0].get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes R0 <- offset 1. R0 <- (R2 + 14)). Result is R0 <- 16.
+	 * Uses unconditional branching.
+	 */
+	@Test
+	void testUnconditional000BR() {
+		String[] program =
+				{"0000000000000001", // Branch no matter the condition code.
+						"0001000010101111",  // R0 <- R2 + #15 (This line should never get executed)
+						"0001000010101110",  // R0 <- R2 + #14
+						"1111000000100101"}; // HALT
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		// Check if the BR is unconditional.
+		assertEquals(0, myComputer.getMemory()[0].substring(4, 3).get2sCompValue());
+		// The result after skipping a single line should be R0 <- 16.
+		assertEquals(16, myComputer.getRegisters()[0].get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes uses to branch statements to branch past a line of addition into R0.
+	 * Branching only when positive such that R0 remains to contain 0.
+	 */
+	@Test
+	void test001BR() {
+		String[] program =
+				{"0001011100100111",  // R3 <- R4 + 7 (This line set the condition code to "001")
+						"0000001000000001",  // Branch past next line if CC is "001", if 'N' or 'Z' then result is 17.
+						"0001000010101111",  // R0 <- R2 + #15 (This line should never get executed)
+						"0000001000000001",  // Branch past next line if CC is "001", if 'N' or 'Z' then result is 17.
+						"0001000010101110",  // R0 <- R2 + #14 (This line should never get executed)
+						"1111000000100101"}; // HALT
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+		assertEquals(0, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes R0 <- offset 1. R0 <- (R2 + 14)). Result is R0 <- 16.
+	 * Branching only when positive.
+	 */
+	@Test
+	void test100BR() {
+		String[] program =
+				{"0001011100100000",  // R3 <- R4 + 0 (This line set the condition code to "100")
+						"0000100000000001",  // Branch past next line if CC is "100", if 'Z' or 'P' then result is 17.
+						"0001000010101111",  // R0 <- R2 + #15 (This line should never get executed)
+						"0001000010101110",  // R0 <- R2 + #14
+						"1111000000100101"}; // HALT
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		// If the BR is unconditional, check
+		assertEquals(-4, myComputer.getMemory()[1].substring(4, 3).get2sCompValue()); // Correct cc is set from the first instruction
+		// If this test passes then the Branch instruction properly branched to the last line before HALT.
+		// If the result is 17 then it did not branch because the condition codes were not met.
+		assertEquals(16, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes R0 <- offset 1. R0 <- (R2 + 14)). Result is R0 <- 16.
+	 * Branching only when positive.
+	 */
+	@Test
+	void test010BR() {
+		String[] program =
+				{"0001000010111110",  // R0 <- R2 + #-2 (Used to set CC to "010")
+						"0000010000000001",  // Branch past next line if CC is "010", if 'N' or 'P' then result is 17.
+						"0001000010101111",  // R0 <- R2 + #15 (This line should never get executed)
+						"0001000010101110",  // R0 <- R2 + #14 (The expected result is R0 <- 16)
+						"1111000000100101"}; // HALT
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		// If the BR is unconditional, check
+		assertEquals(2, myComputer.getMemory()[1].substring(4, 3).get2sCompValue()); // Correct cc is set from the first instruction
+		// If this test passes then the Branch instruction properly branched to the last line before HALT.
+		// If the result is 17 then it did not branch because the condition codes were not met.
+		assertEquals(16, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeBranch()}. <br>
+	 * Computes R0 <- R2 -16 = 14. The condition code should not meet the requirement of
+	 * the Branch's CC "010" meaning that no Branching happens and R0 will hold -1 by the end.
+	 * Branching only when CC is Zero, requirement that CC is met should be false.
+	 */
+	@Test
+	void test010BRConditionFalse() {
+		String[] program =
+				{"0001000010110000",  // R0 <- R2 + #-16 (Used to set CC to "100"). If the CC matched BR's "010" then R0 <- -14.
+						"0000010000000001",  // Branch past next line if CC is "010", if 'N' or 'P' then result is 17.
+						"0001000000111111",  // R0 <- R0 + #1 (This line should get executed and the result in R0 <- -1)
+						"1111000000100101"}; // HALT
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+
+		// Check that the CC was set to "100"
+
+		assertEquals(-4, myComputer.getCC().get2sCompValue()); // Correct cc is set from the first instruction
+
+		// Check that the BR condition is "010"
+		assertEquals(2, myComputer.getMemory()[1].substring(4, 3).get2sCompValue());
+		// If this test passes then the Branch instruction properly branched to the last line before HALT.
+		// If the result is -14 then it did branch because the condition codes were met.
+		assertEquals(-1, myComputer.getRegisters()[0].get2sCompValue()); // Test that the correct value is added to R2 into R0.
+	}
+
 }

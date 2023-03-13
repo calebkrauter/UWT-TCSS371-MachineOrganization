@@ -140,11 +140,9 @@ public class Computer {
 	 * adding the sign-extended PCoffset9 field to the incremented PC.
 	 */
 	public void executeBranch() {
-		System.out.println("BR"); // remove this print statement
-		
-		// TODO - implement the BR instruction here
-		// 		  Based on condition codes, if they are met then the new location from offset is used.
-		
+		if (mIR.substring(4, 3).get2sCompValue() == getCC().get2sCompValue())
+			mPC.setUnsignedValue(mPC.getUnsignedValue() + mIR.substring(7, 9).get2sCompValue());
+
 	}
 	
 	/**
@@ -274,7 +272,7 @@ public class Computer {
 			mCC.setBits("100".toCharArray());
 		} else if (destBS.get2sCompValue() > 0) {
 			mCC.setBits("001".toCharArray());
-		} else {
+		} else if (destBS.get2sCompValue() == 0){
 			mCC.setBits("010".toCharArray());
 		}
 	}
