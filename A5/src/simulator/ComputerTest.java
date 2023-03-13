@@ -237,6 +237,30 @@ class ComputerTest {
 
 	/**
 	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
+	 * Computes 1 AND 2. R0 <- R1 AND R2
+	 */
+	@Test
+	void testExecuteANDR1andLoad4IntoR2() {
+
+		String[] program =
+				{"0010010000000010",  // Load into R2 5
+						"0101000001000101",  // R0 <- R1 AND R2
+						"1111000000100101", // HALT
+						"0000000000000101" // Ascii value for 5
+				};
+
+		myComputer.loadMachineCode(program);
+		myComputer.execute();
+		assertEquals(1, myComputer.getRegisters()[0].get2sCompValue());
+
+		// Check that CC was set correctly
+		BitString expectedCC = new BitString();
+		expectedCC.setBits("001".toCharArray());
+		assertEquals(expectedCC.get2sCompValue(), myComputer.getCC().get2sCompValue());
+	}
+
+	/**
+	 * Test method for {@link simulator.Computer#executeAnd()}. <br>
 	 * Computes 5 AND 15. R0 <- R5 AND 15
 	 */
 	@Test
