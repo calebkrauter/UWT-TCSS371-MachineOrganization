@@ -195,6 +195,7 @@ class ConvertTest {
      */
     @Test
     void testConvertDecimalTo2sCompIllegalNegativeMAX() {
+
         final int data = -32769;
         assertThrows(IllegalArgumentException.class, () -> {
             Convert.convertDecimalTo2sComp(data);
